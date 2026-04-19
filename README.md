@@ -236,3 +236,114 @@ For autograding to work correctly, your output must include these labels exactly
 - `Semester II GPA:`  
 - `CGPA:`  
 - `Classification:`  
+/*
+Name: Augustine Ceasar Oloya 
+Registration Number: 24/U/BIE/03944/PE
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to determine grade point based on score
+int getGradePoint(int score) {
+    if (score >= 80 && score <= 100) return 5;
+    else if (score >= 70) return 4;
+    else if (score >= 60) return 3;
+    else if (score >= 50) return 2;
+    else if (score >= 0) return 0;
+    else return -1; // invalid
+}
+
+// Function to determine grade letter
+char getGradeLetter(int score) {
+    if (score >= 80 && score <= 100) return 'A';
+    else if (score >= 70) return 'B';
+    else if (score >= 60) return 'C';
+    else if (score >= 50) return 'D';
+    else if (score >= 0) return 'F';
+    else return 'X'; // invalid
+}
+
+// Function to calculate GPA
+double calculateGPA(int scores[], int creditUnits[], char *courseCodes[], int n) {
+    int totalCredits = 0;
+    double weightedSum = 0.0;
+
+    for (int i = 0; i < n; i++) {
+        int gp = getGradePoint(scores[i]);
+        char grade = getGradeLetter(scores[i]);
+
+        if (gp == -1 || grade == 'X') {
+            printf("Invalid score entered\n");
+            exit(0);
+        }
+
+        double weighted = gp * creditUnits[i];
+        weightedSum += weighted;
+        totalCredits += creditUnits[i];
+
+        printf("%s\tScore: %d\tGrade: %c\tGrade Point: %d\tCredit Unit: %d\tWeighted: %.2f\n",
+               courseCodes[i], scores[i], grade, gp, creditUnits[i], weighted);
+    }
+
+    return weightedSum / totalCredits;
+}
+
+// Function to classify CGPA
+const char* classify(double cgpa) {
+    if (cgpa >= 4.40) return "First Class";
+    else if (cgpa >= 3.60) return "Second Class Upper";
+    else if (cgpa >= 2.80) return "Second Class Lower";
+    else if (cgpa >= 2.00) return "Pass";
+    else return "Fail";
+}
+
+int main() {
+    // Course codes and credit units
+    char *semester1Codes[8] = {
+        "TEMB 1101","TEMB 1102","TEMB 1103","TEMB 1104",
+        "TEMB 1105","TEMB 1106","TEMB 1107","TEMB 1108"
+    };
+    int semester1Credits[8] = {4,3,3,3,3,3,2,3};
+
+    char *semester2Codes[8] = {
+        "TEMB 1201","TEMB 1202","TEMB 1203","TEMB 1204",
+        "TEMB 1205","TEMB 1206","TEMB 1207","TEMB 1208"
+    };
+    int semester2Credits[8] = {4,3,3,3,3,3,3,3};
+
+    int semester1Scores[8], semester2Scores[8];
+
+    // Input Semester I scores
+    printf("Enter scores for Semester I courses:\n");
+    for (int i = 0; i < 8; i++) {
+        printf("%s: ", semester1Codes[i]);
+        scanf("%d", &semester1Scores[i]);
+    }
+
+    // Input Semester II scores
+    printf("Enter scores for Semester II courses:\n");
+    for (int i = 0; i < 8; i++) {
+        printf("%s: ", semester2Codes[i]);
+        scanf("%d", &semester2Scores[i]);
+    }
+
+    // Display report
+    printf("\n--- Semester I Report ---\n");
+    double gpa1 = calculateGPA(semester1Scores, semester1Credits, semester1Codes, 8);
+
+    printf("\n--- Semester II Report ---\n");
+    double gpa2 = calculateGPA(semester2Scores, semester2Credits, semester2Codes, 8);
+
+    // CGPA calculation
+    double totalWeighted = gpa1 * 24 + gpa2 * 25; // total weighted sum
+    double cgpa = totalWeighted / (24 + 25);
+
+    // Required summary output
+    printf("\nSemester I GPA: %.2f\n", gpa1);
+    printf("Semester II GPA: %.2f\n", gpa2);
+    printf("CGPA: %.2f\n", cgpa);
+    printf("Classification: %s\n", classify(cgpa));
+
+    return 0;
+}
